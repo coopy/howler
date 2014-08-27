@@ -7,12 +7,15 @@ module.exports = Model.extend({
 
     this.listenTo(this, 'change:token', function () {
       localStorage.token = self.token;
+      this.fetch();
     });
 
     if (localStorage.token) {
       this.token = localStorage.token;
     }
   },
+
+  url: 'http://wolves.technology/wolves/me',
 
   props: {
     id: 'string',
@@ -30,5 +33,16 @@ module.exports = Model.extend({
         return !!this.token;
       }
     }
+  },
+
+  ajaxConfig: function () {
+    if (!this.loggedIn) {
+      return {};
+    }
+    return {
+      headers: {
+        'Auth-Token': this.token
+      }
+    };
   }
 });
